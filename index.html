@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV Interactivo | Aarón González Mendiola</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals & Slate -->
+    <!-- Application Structure Plan: A single-page, vertical-scrolling application. The structure prioritizes recruiter needs: 1) Hero section for immediate identity, 2) Profile for a quick summary, 3) An interactive Skills Dashboard (now card-based) for visual assessment, 4) An expandable Experience Timeline for detailed exploration, and 5) Education. This flow is more engaging than a linear document, allowing users to control the depth of information they consume. New LLM features (Cover Letter Generator, AI Video Project Ideas) are integrated logically into the Profile and Skills sections to enhance the interactive demonstration of capabilities. -->
+    <!-- Visualization & Content Choices: Skills are presented as categorized cards for detail (Goal: Organize), removing the chart for a more direct presentation. Experience is an HTML/CSS vertical timeline with a JS-powered accordion (Goal: Change/Inform), keeping the UI clean and focused. Education is a clear, static list (Goal: Inform). The new LLM features provide dynamic text generation (Goal: Inform/Engage) directly demonstrating practical application of AI, leveraging Gemini API. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #FDFDFB;
+            color: #3d405b;
+        }
+        h1, h2, h3, h4 {
+            font-family: 'Montserrat', sans-serif;
+            color: #2F4F4F;
+        }
+        .timeline-item-content {
+            transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .timeline-item-content.open {
+            max-height: 500px;
+            opacity: 1;
+        }
+        .skill-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .skill-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #2F4F4F;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+
+        <header class="text-center mb-16 md:mb-24">
+            <h1 class="text-4xl md:text-6xl font-bold tracking-tight">Aarón González Mendiola</h1>
+            <h2 class="text-xl md:text-2xl font-semibold mt-2 text-[#4a5568]">Coordinador de Proyectos y Comunicación Digital</h2>
+            <div class="mt-6 flex justify-center items-center space-x-4 md:space-x-6 text-sm text-[#2F4F4F]">
+                <a href="tel:5546656948" class="hover:underline flex items-center">
+                    <span class="mr-1.5">📞</span> 55 4665 6948
+                </a>
+                <span class="text-gray-300">|</span>
+                <a href="mailto:icmaarongmendiola@gmail.com" class="hover:underline flex items-center">
+                    <span class="mr-1.5"✉️</span> icmaarongmendiola@gmail.com
+                </a>
+                <span class="text-gray-300">|</span>
+                <a href="https://www.linkedin.com/in/aarongonzalezmendiola" target="_blank" class="hover:underline">LinkedIn</a>
+                <span class="text-gray-300">|</span>
+                <a href="https://github.com/aarongonzalezmendiola" target="_blank" class="hover:underline">GitHub</a>
+            </div>
+        </header>
+
+        <section id="profile" class="max-w-3xl mx-auto text-center mb-16 md:mb-24">
+            <h3 class="text-3xl font-bold mb-4">Perfil Profesional</h3>
+            <p class="text-lg text-gray-700 leading-relaxed">
+                Ingeniero en Comunicación Multimedia con experiencia en **atención digital, redacción y gestión de interacciones en redes sociales**. Me entusiasma explorar y aprender constantemente nuevas áreas, como la **generación de videos con inteligencia artificial** (investigando y ejecutando prompts con Flow 3 de Google). Actualmente, estoy fortaleciendo mis conocimientos en **estrategias de comunicación digital** a través de un curso de Meta, aplicándolos en el apoyo para las redes sociales de un consultorio podológico. He trabajado en la creación de copys, manejo de casos sensibles y coordinación con equipos internos para una comunicación efectiva y alineada con la marca. Utilizo herramientas digitales e inteligencia artificial para optimizar ideas y procesos. Mi interés es continuar desarrollando mis habilidades en comunicación y gestión de proyectos, aportando organización, creatividad y atención al detalle.
+            </p>
+            <div class="mt-8">
+                <p class="text-md text-gray-600 mb-4 max-w-xl mx-auto">
+                    🚀 **Demostración de IA:** Utiliza Gemini para generar un borrador de carta de presentación. Introduce el puesto y la empresa para ver cómo mi perfil se adapta automáticamente.
+                </p>
+                <button id="generateCoverLetterBtn" class="bg-[#2F4F4F] text-white px-6 py-3 rounded-lg hover:bg-[#4a5568] transition duration-300 shadow-md">
+                    ✨ Generar Carta de Presentación
+                </button>
+            </div>
+
+            <div id="coverLetterModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4 hidden">
+                <div class="bg-white rounded-lg p-8 w-full max-w-2xl shadow-xl">
+                    <h4 class="text-2xl font-bold mb-4 text-[#2F4F4F]">Generar Carta de Presentación</h4>
+                    <div class="mb-4 text-left">
+                        <label for="companyName" class="block text-gray-700 text-sm font-bold mb-2">Nombre de la Empresa:</label>
+                        <input type="text" id="companyName" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Ej: Google">
+                    </div>
+                    <div class="mb-4 text-left">
+                        <label for="jobRole" class="block text-gray-700 text-sm font-bold mb-2">Puesto al que Aplicas:</label>
+                        <input type="text" id="jobRole" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Ej: Project Manager">
+                    </div>
+                    <div id="coverLetterLoader" class="flex justify-center my-4 hidden">
+                        <div class="loader"></div>
+                    </div>
+                    <textarea id="coverLetterOutput" class="w-full h-64 border rounded p-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#2F4F4F] resize-y" placeholder="Tu carta de presentación aparecerá aquí..." readonly></textarea>
+                    <div class="mt-6 flex justify-end space-x-4">
+                        <button id="closeCoverLetterModal" class="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-400 transition duration-300">Cerrar</button>
+                        <button id="copyCoverLetter" class="bg-[#2F4F4F] text-white px-4 py-2 rounded-lg hover:bg-[#4a5568] transition duration-300">Copiar</button>
+                    </div>
+                    <p id="copyMessage" class="text-sm text-green-600 mt-2 hidden">¡Copiado al portapapeles!</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="skills" class="mb-16 md:mb-24">
+            <h3 class="text-3xl font-bold text-center mb-4">Mis Habilidades Clave</h3>
+            <p class="text-lg text-center text-gray-700 max-w-3xl mx-auto mb-12">
+                Explora las categorías para ver las herramientas y técnicas específicas que manejo.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="skill-card bg-white p-6 rounded-lg border border-gray-200">
+                    <h4 class="text-xl font-bold mb-3">Gestión de Proyectos</h4>
+                    <ul class="list-disc list-inside text-gray-600 space-y-1">
+                        <li>Planeación y organización</li>
+                        <li>Seguimiento de actividades</li>
+                        <li>Gestión de recursos</li>
+                        <li>Colaboración multidisciplinaria</li>
+                    </ul>
+                </div>
+                <div class="skill-card bg-white p-6 rounded-lg border border-gray-200">
+                    <h4 class="text-xl font-bold mb-3">Comunicación y Contenido</h4>
+                    <ul class="list-disc list-inside text-gray-600 space-y-1">
+                        <li>Redacción y ortografía</li>
+                        <li>Creación de copys</li>
+                        <li>Comunicación de marca</li>
+                        <li>Presentaciones efectivas</li>
+                    </ul>
+                </div>
+                <div class="skill-card bg-white p-6 rounded-lg border border-gray-200">
+                    <h4 class="text-xl font-bold mb-3">Estrategia Digital</h4>
+                    <ul class="list-disc list-inside text-gray-600 space-y-1">
+                        <li>Estrategia en Redes Sociales</li>
+                        <li>Monitoreo y análisis</li>
+                        <li>Gestión de crisis</li>
+                        <li>Uso de CRM</li>
+                    </ul>
+                </div>
+                 <div class="skill-card bg-white p-6 rounded-lg border border-gray-200">
+                    <h4 class="text-xl font-bold mb-3">Herramientas Digitales</h4>
+                    <ul class="list-disc list-inside text-gray-600 space-y-1">
+                        <li>Trello</li>
+                        <li>Figma</li>
+                        <li>Google Workspace</li>
+                        <li>Sistemas CRM</li>
+                    </ul>
+                </div>
+                 <div class="skill-card bg-white p-6 rounded-lg border border-gray-200">
+                    <h4 class="text-xl font-bold mb-3">IA Generativa</h4>
+                    <ul class="list-disc list-inside text-gray-600 space-y-1">
+                        <li>ChatGPT</li>
+                        <li>Flow & Gemini</li>
+                        <li>Ideogram.ai</li>
+                        <li>Optimización de procesos</li>
+                    </ul>
+                </div>
+                 <div class="skill-card bg-white p-6 rounded-lg border border-gray-200">
+                    <h4 class="text-xl font-bold mb-3">Habilidades Blandas</h4>
+                    <ul class="list-disc list-inside text-gray-600 space-y-1">
+                        <li>Trabajo en equipo</li>
+                        <li>Comunicación efectiva</li>
+                        <li>Resolución de problemas</li>
+                        <li>Atención al detalle</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-12 text-center">
+                <p class="text-md text-gray-600 mb-4 max-w-xl mx-auto">
+                    🧠 **Demostración de IA:** ¿Curioso sobre proyectos de IA para video? Haz clic para obtener ideas innovadoras generadas por Gemini, que combinan comunicación, gestión y tu interés en el contenido visual.
+                </p>
+                <button id="generateProjectIdeasBtn" class="bg-[#2F4F4F] text-white px-6 py-3 rounded-lg hover:bg-[#4a5568] transition duration-300 shadow-md">
+                    ✨ Ideas de Proyectos IA para Video
+                </button>
+                <div id="projectIdeasLoader" class="flex justify-center my-4 hidden">
+                    <div class="loader"></div>
+                </div>
+                <div id="projectIdeasOutput" class="mt-6 p-4 border border-gray-200 rounded-lg text-left text-gray-800 hidden">
+                    <h4 class="text-xl font-bold mb-3 text-[#2F4F4F]">Proyectos Sugeridos:</h4>
+                    <ul id="ideasList" class="list-disc list-inside space-y-2"></ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="experience" class="mb-16 md:mb-24">
+            <h3 class="text-3xl font-bold text-center mb-4">Experiencia Laboral</h3>
+            <p class="text-lg text-center text-gray-700 max-w-3xl mx-auto mb-12">
+                Explora mi trayectoria profesional. Haz clic en cada puesto para ver mis responsabilidades y logros clave.
+            </p>
+            <div class="relative max-w-3xl mx-auto">
+                <div class="absolute left-1/2 -translate-x-1/2 h-full w-0.5 bg-gray-200"></div>
+                <div id="timeline-container" class="space-y-12">
+                </div>
+            </div>
+        </section>
+
+        <section id="education" class="max-w-3xl mx-auto">
+            <h3 class="text-3xl font-bold text-center mb-8">Educación y Certificaciones</h3>
+            <div class="space-y-6 text-center">
+                <div>
+                    <h4 class="text-xl font-bold">Ingeniería en Comunicación Multimedia</h4>
+                    <p class="text-gray-600">Universidad Estatal del Valle de Ecatepec | 2017 – 2022</p>
+                </div>
+                <div>
+                    <h4 class="text-xl font-bold">Entrenamiento en Desarrollo Java Full Stack</h4>
+                    <p class="text-gray-600">Generation México | 2023</p>
+                </div>
+                <div>
+                    <h4 class="text-xl font-bold">Meta Social Media Marketing Professional Certificate</h4>
+                    <p class="text-gray-600">Coursera | En progreso (2025)</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-50 py-8 mt-16">
+        <div class="container mx-auto text-center text-gray-600">
+            <p>&copy; 2024 Aarón González Mendiola. Diseñado con entusiasmo.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            const experienceData = [
+                {
+                    job: 'Agente Redes Sociales',
+                    company: 'Totalplay',
+                    date: 'Feb 2024 – Actualidad',
+                    details: [
+                        'Redacción de copys para publicaciones en muro y respuestas en redes sociales (Facebook, X) cuidando tono, ortografía y alineación con la voz de marca.',
+                        'Gestión y respuesta a casos de crisis en redes sociales, atendiendo temas sensibles que afectan la reputación de la marca.',
+                        'Monitoreo en tiempo real de interacciones y publicaciones para detectar y atender menciones relevantes.',
+                        'Gestión simultánea de hasta 5 conversaciones en CRM, asegurando seguimiento y escalamiento oportuno.',
+                        'Colaboración con equipos internos para coordinar respuestas y acciones en casos que requieren atención inmediata.'
+                    ]
+                },
+                {
+                    job: 'Asesor de Servicio y Soporte Técnico',
+                    company: 'Teleperformance',
+                    date: 'Jul 2022 – Ago 2023',
+                    details: [
+                        'Comunicación escrita efectiva para resolver solicitudes y dudas de usuarios.',
+                        'Participación en reuniones para alinear procesos y mejorar la atención.',
+                        'Registro y documentación precisa de incidencias.'
+                    ]
+                },
+                {
+                    job: 'Full Stack Developer Junior (Proyecto Académico)',
+                    company: 'Generation México',
+                    date: 'Ago 2023 – Nov 2023',
+                    details: [
+                        'Participación en reuniones SCRUM para planificar entregas y definir tareas.',
+                        'Coordinación con equipo multidisciplinario en diseño, contenido y funcionalidad.',
+                        'Elaboración de presentaciones para exponer avances y resultados.'
+                    ]
+                },
+                {
+                    job: 'Desarrollador Web y Comunicación Digital',
+                    company: 'Soluciones Terrestres del Valle',
+                    date: 'Jun 2021 – Ene 2022',
+                    details: [
+                        'Creación de sitio web corporativo con contenido claro y visualmente atractivo.',
+                        'Organización de información y coordinación con equipo para cumplir plazos.'
+                    ]
+                }
+                ,
+                {
+                    job: 'Agente Líder y Coordinador de Equipo',
+                    company: 'Grupo Telvista S.A. de C.V.',
+                    date: 'Oct 2020 – Mar 2022',
+                    details: [
+                        'Supervisión de equipo de 15 personas, asignación de tareas y seguimiento de resultados.',
+                        'Elaboración de reportes y presentaciones para gerencia.',
+                        'Organización de recursos y tiempos para cumplir objetivos.'
+                    ]
+                }
+            ];
+
+            const timelineContainer = document.getElementById('timeline-container');
+            experienceData.forEach((item, index) => {
+                const alignmentClass = index % 2 === 0 ? 'md:text-right md:pr-8' : 'md:text-left md:pl-8';
+                const dotAlignmentClass = index % 2 === 0 ? 'md:right-0 md:-mr-2.5' : 'md:left-0 md:-ml-2.5';
+                const contentHtml = `
+                    <div class="relative timeline-item">
+                        <div class="absolute top-5 left-1/2 -translate-x-1/2 w-5 h-5 bg-[#2F4F4F] rounded-full border-4 border-white"></div>
+                        <div class="md:w-1/2 ${index % 2 === 0 ? 'md:ml-0' : 'md:ml-1/2'}">
+                            <div class="bg-white p-6 rounded-lg border border-gray-200 cursor-pointer timeline-header">
+                                <p class="text-gray-500 text-sm">${item.date}</p>
+                                <h4 class="text-xl font-bold">${item.job}</h4>
+                                <p class="text-gray-700 font-semibold">${item.company}</p>
+                                <div class="timeline-item-content mt-4">
+                                    <ul class="list-disc list-inside text-gray-600 space-y-2 text-left">
+                                        ${item.details.map(d => `<li>${d}</li>`).join('')}
+                                    </ul>
+                                </div>
+                                <div class="text-right text-sm mt-3 text-[#2F4F4F] font-bold expand-indicator">+ Ver más</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                timelineContainer.innerHTML += contentHtml;
+            });
+
+            document.querySelectorAll('.timeline-header').forEach(header => {
+                header.addEventListener('click', () => {
+                    const content = header.querySelector('.timeline-item-content');
+                    const indicator = header.querySelector('.expand-indicator');
+                    content.classList.toggle('open');
+                    if (content.classList.contains('open')) {
+                        indicator.textContent = '- Ver menos';
+                    } else {
+                        indicator.textContent = '+ Ver más';
+                    }
+                });
+            });
+
+            const generateCoverLetterBtn = document.getElementById('generateCoverLetterBtn');
+            const coverLetterModal = document.getElementById('coverLetterModal');
+            const closeCoverLetterModal = document.getElementById('closeCoverLetterModal');
+            const companyNameInput = document.getElementById('companyName');
+            const jobRoleInput = document.getElementById('jobRole');
+            const coverLetterOutput = document.getElementById('coverLetterOutput');
+            const coverLetterLoader = document.getElementById('coverLetterLoader');
+            const copyCoverLetterBtn = document.getElementById('copyCoverLetter');
+            const copyMessage = document.getElementById('copyMessage');
+
+            generateCoverLetterBtn.addEventListener('click', () => {
+                coverLetterModal.classList.remove('hidden');
+                companyNameInput.value = '';
+                jobRoleInput.value = '';
+                coverLetterOutput.value = '';
+                copyMessage.classList.add('hidden');
+            });
+
+            closeCoverLetterModal.addEventListener('click', () => {
+                coverLetterModal.classList.add('hidden');
+            });
+
+            companyNameInput.addEventListener('input', generateLetterDebounced);
+            jobRoleInput.addEventListener('input', generateLetterDebounced);
+
+            let debounceTimeout;
+            function generateLetterDebounced() {
+                clearTimeout(debounceTimeout);
+                debounceTimeout = setTimeout(generateCoverLetter, 1000);
+            }
+
+            async function generateCoverLetter() {
+                const company = companyNameInput.value.trim();
+                const role = jobRoleInput.value.trim();
+
+                if (!company || !role) {
+                    coverLetterOutput.value = 'Por favor, introduce el nombre de la empresa y el puesto para generar la carta.';
+                    return;
+                }
+
+                coverLetterLoader.classList.remove('hidden');
+                coverLetterOutput.value = 'Generando carta de presentación...';
+
+                const profileText = document.querySelector('#profile p').textContent;
+                const skillsList = Array.from(document.querySelectorAll('#skills ul li')).map(li => li.textContent).join(', ');
+                const experienceSummary = experienceData.map(exp => `${exp.job} en ${exp.company}: ${exp.details.join(' ')}`).join('. ');
+
+                const prompt = `Escribe una carta de presentación profesional para Aarón González Mendiola.
+                Aarón es un ${document.querySelector('h2').textContent}. Su perfil: "${profileText}".
+                Sus habilidades clave incluyen: ${skillsList}.
+                Su experiencia relevante es: ${experienceSummary}.
+                Debe adaptar la carta para una posición de ${role} en ${company}.
+                La carta debe ser concisa, entusiasta y reflejar un deseo de aprender y crecer, no sonar exagerada.
+                Formato: Saludo, Introducción, Por qué encaja (habilidades y experiencia relevante), Por qué le interesa la empresa, Cierre y Agradecimiento.`;
+
+                try {
+                    let chatHistory = [];
+                    chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                    const payload = { contents: chatHistory };
+                    const apiKey = "";
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const result = await response.json();
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        const text = result.candidates[0].content.parts[0].text;
+                        coverLetterOutput.value = text;
+                    } else {
+                        coverLetterOutput.value = 'No se pudo generar la carta. Inténtalo de nuevo.';
+                    }
+                } catch (error) {
+                    coverLetterOutput.value = 'Error al generar la carta. Verifica tu conexión o intenta más tarde.';
+                } finally {
+                    coverLetterLoader.classList.add('hidden');
+                }
+            }
+
+            copyCoverLetterBtn.addEventListener('click', () => {
+                const textToCopy = coverLetterOutput.value;
+                if (textToCopy) {
+                    try {
+                        const tempInput = document.createElement('textarea');
+                        tempInput.value = textToCopy;
+                        document.body.appendChild(tempInput);
+                        tempInput.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(tempInput);
+                        copyMessage.classList.remove('hidden');
+                        setTimeout(() => copyMessage.classList.add('hidden'), 2000);
+                    } catch (err) {
+                        console.error('Error al copiar el texto: ', err);
+                    }
+                }
+            });
+
+            const generateProjectIdeasBtn = document.getElementById('generateProjectIdeasBtn');
+            const projectIdeasLoader = document.getElementById('projectIdeasLoader');
+            const projectIdeasOutput = document.getElementById('projectIdeasOutput');
+            const ideasList = document.getElementById('ideasList');
+
+            generateProjectIdeasBtn.addEventListener('click', generateProjectIdeas);
+
+            async function generateProjectIdeas() {
+                projectIdeasLoader.classList.remove('hidden');
+                projectIdeasOutput.classList.add('hidden');
+                ideasList.innerHTML = '';
+
+                const profileText = document.querySelector('#profile p').textContent;
+                const prompt = `Basado en el siguiente perfil de Aarón González Mendiola: "${profileText}", y su interés en la generación de videos con IA (usando herramientas como Flow 3 de Google y su apoyo a las redes sociales de un consultorio podológico), sugiere 3-5 ideas de proyectos prácticos, creativos y de pequeña a mediana escala. Enfócate en proyectos que combinen sus habilidades en comunicación, gestión de proyectos y IA, especialmente para contenido de redes sociales para pequeñas empresas o negocios locales. Presenta las ideas como una lista numerada.`;
+
+                try {
+                    let chatHistory = [];
+                    chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                    const payload = { contents: chatHistory };
+                    const apiKey = "";
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const result = await response.json();
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        const text = result.candidates[0].content.parts[0].text;
+                        const ideas = text.split('\n').filter(line => line.trim().length > 0);
+                        ideas.forEach(idea => {
+                            const li = document.createElement('li');
+                            li.textContent = idea.replace(/^\d+\.\s*/, '');
+                            ideasList.appendChild(li);
+                        });
+                        projectIdeasOutput.classList.remove('hidden');
+                    } else {
+                        ideasList.innerHTML = '<li>No se pudieron generar ideas de proyectos. Inténtalo de nuevo.</li>';
+                        projectIdeasOutput.classList.remove('hidden');
+                    }
+                } catch (error) {
+                    ideasList.innerHTML = '<li>Error al generar ideas. Verifica tu conexión o intenta más tarde.</li>';
+                    projectIdeasOutput.classList.remove('hidden');
+                } finally {
+                    projectIdeasLoader.classList.add('hidden');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
