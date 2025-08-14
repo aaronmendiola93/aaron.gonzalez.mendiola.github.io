@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <!-- Chosen Palette: Warm Neutrals & Slate -->
-    <!-- Application Structure Plan: A single-page, vertical-scrolling application. The structure prioritizes recruiter needs: 1) Hero section for immediate identity, 2) Profile for a quick summary, 3) An interactive Skills Dashboard (now card-based) for visual assessment, 4) An expandable Experience Timeline for detailed exploration, and 5) Education. This flow is more engaging than a linear document, allowing users to control the depth of information they consume. New LLM features (Cover Letter Generator, AI Video Project Ideas) are integrated logically into the Profile and Skills sections to enhance the interactive demonstration of capabilities. -->
+    <!-- Application Structure Plan: A single-page, vertical-scrolling application. The structure prioritizes recruiter needs: 1) Hero section for immediate identity, 2) Interactive Intro, 3) Profile for a quick summary, 4) An interactive Skills Dashboard (now card-based) for visual assessment, 5) An expandable Experience Timeline for detailed exploration, and 6) Education. This flow is more engaging than a linear document, allowing users to control the depth of information they consume. New LLM features (Cover Letter Generator, AI Video Project Ideas) are integrated logically into the Profile and Skills sections to enhance the interactive demonstration of capabilities. -->
     <!-- Visualization & Content Choices: Skills are presented as categorized cards for detail (Goal: Organize), removing the chart for a more direct presentation. Experience is an HTML/CSS vertical timeline with a JS-powered accordion (Goal: Change/Inform), keeping the UI clean and focused. Education is a clear, static list (Goal: Inform). The new LLM features provide dynamic text generation (Goal: Inform/Engage) directly demonstrating practical application of AI, leveraging Gemini API. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
@@ -60,7 +60,7 @@
 
         <header class="text-center mb-16 md:mb-24">
             <h1 class="text-4xl md:text-6xl font-bold tracking-tight">Aarón González Mendiola</h1>
-            <h2 class="text-xl md:text-2xl font-semibold mt-2 text-[#4a5568]">Coordinador de Proyectos y Comunicación Digital</h2>
+            <h2 class="text-xl md:text-2xl font-semibold mt-2 text-[#4a5568]">Especialista en Comunicación Digital y Apoyo a Proyectos</h2>
             <div class="mt-6 flex flex-wrap justify-center items-center space-x-2 sm:space-x-4 md:space-x-6 text-sm text-[#2F4F4F]">
                 <a href="tel:5546656948" class="hover:underline flex items-center mb-2 sm:mb-0">
                     <span class="mr-1.5">📞</span> 55 4665 6948
@@ -76,14 +76,34 @@
             </div>
         </header>
 
+        <!-- Nueva sección de Introducción Interactiva -->
+        <section id="interactive-intro" class="max-w-3xl mx-auto text-center mb-16 md:mb-24 p-6 bg-white rounded-lg border border-gray-200 shadow-sm">
+            <h3 class="text-2xl font-bold mb-4 text-[#2F4F4F]">¡Bienvenido a mi CV Interactivo!</h3>
+            <p class="text-lg text-gray-700 leading-relaxed">
+                Este no es un CV tradicional. Aquí podrás explorar mi perfil, experiencia y habilidades de una manera dinámica.
+                Además, he integrado funciones de <strong>Inteligencia Artificial</strong> que demuestran mi curiosidad y aplicación de la tecnología:
+            </p>
+            <ul class="list-disc list-inside text-gray-600 mt-4 text-left mx-auto max-w-lg">
+                <li>
+                    En la sección <strong>Perfil Profesional</strong>, puedes usar Gemini para <strong>generar un borrador de carta de presentación</strong> adaptada a un puesto y empresa específicos.
+                </li>
+                <li>
+                    En la sección <strong>Habilidades</strong>, encontrarás un botón que te dará <strong>ideas de proyectos de video impulsadas por IA</strong>, reflejando mi interés en nuevas tecnologías.
+                </li>
+            </ul>
+            <p class="text-lg text-gray-700 leading-relaxed mt-4">
+                ¡Te invito a interactuar con estas funciones y explorar mi trayectoria!
+            </p>
+        </section>
+
         <section id="profile" class="max-w-3xl mx-auto text-center mb-16 md:mb-24">
             <h3 class="text-3xl font-bold mb-4">Perfil Profesional</h3>
             <p class="text-lg text-gray-700 leading-relaxed">
-                Ingeniero en Comunicación Multimedia con experiencia en **atención digital, redacción y gestión de interacciones en redes sociales**. Me entusiasma explorar y aprender constantemente nuevas áreas, como la **generación de videos con inteligencia artificial** (investigando y ejecutando prompts con Flow 3 de Google). Actualmente, estoy fortaleciendo mis conocimientos en **estrategias de comunicación digital** a través de un curso de Meta, aplicándolos en el apoyo para las redes sociales de un consultorio podológico. He trabajado en la creación de copys, manejo de casos sensibles y coordinación con equipos internos para una comunicación efectiva y alineada con la marca. Utilizo herramientas digitales e inteligencia artificial para optimizar ideas y procesos. Mi interés es continuar desarrollando mis habilidades en comunicación y gestión de proyectos, aportando organización, creatividad y atención al detalle.
+                Ingeniero en Comunicación Multimedia con experiencia en <strong>atención digital, redacción y gestión de interacciones en redes sociales</strong>. Me entusiasma explorar y aprender constantemente nuevas áreas, como la <strong>generación de videos con inteligencia artificial</strong> (investigando y ejecutando prompts con Flow 3 de Google). Actualmente, estoy fortaleciendo mis conocimientos en <strong>estrategias de comunicación digital</strong> a través de un curso de Meta, aplicándolos en el apoyo para las redes sociales de un consultorio podológico. He trabajado en la creación de copys, manejo de casos sensibles y coordinación con equipos internos para una comunicación efectiva y alineada con la marca. Utilizo herramientas digitales e inteligencia artificial para optimizar ideas y procesos. Mi interés es continuar desarrollando mis habilidades en comunicación y gestión de proyectos, aportando organización, creatividad y atención al detalle.
             </p>
             <div class="mt-8">
                 <p class="text-md text-gray-600 mb-4 max-w-xl mx-auto">
-                    🚀 **Demostración de IA:** Utiliza Gemini para generar un borrador de carta de presentación. Introduce el puesto y la empresa para ver cómo mi perfil se adapta automáticamente.
+                    🚀 <strong>Demostración de IA:</strong> Utiliza Gemini para generar un borrador de carta de presentación. Introduce el puesto y la empresa para ver cómo mi perfil se adapta automáticamente.
                 </p>
                 <button id="generateCoverLetterBtn" class="bg-[#2F4F4F] text-white px-6 py-3 rounded-lg hover:bg-[#4a5568] transition duration-300 shadow-md">
                     ✨ Generar Carta de Presentación
@@ -177,7 +197,7 @@
             </div>
             <div class="mt-12 text-center">
                 <p class="text-md text-gray-600 mb-4 max-w-xl mx-auto">
-                    🧠 **Demostración de IA:** ¿Curioso sobre proyectos de IA para video? Haz clic para obtener ideas innovadoras generadas por Gemini, que combinan comunicación, gestión y tu interés en el contenido visual.
+                    🧠 <strong>Demostración de IA:</strong> ¿Curioso sobre proyectos de IA para video? Haz clic para obtener ideas innovadoras generadas por Gemini, que combinan comunicación, gestión y tu interés en el contenido visual.
                 </p>
                 <button id="generateProjectIdeasBtn" class="bg-[#2F4F4F] text-white px-6 py-3 rounded-lg hover:bg-[#4a5568] transition duration-300 shadow-md">
                     ✨ Ideas de Proyectos IA para Video
